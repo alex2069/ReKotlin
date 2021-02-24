@@ -150,9 +150,9 @@ internal class ParentStore<State>(
 
     private fun defaultDispatch(dispatchable: Dispatchable) =
             when (dispatchable) {
-                is Action -> _state = noInterruptions {
+                is Action -> {
                     children.forEach { it(dispatchable) }
-                    reducer(dispatchable, _state)
+                    _state = noInterruptions { reducer(dispatchable, _state) }
                 }
                 is Effect -> listeners.forEach { it.onEffect(dispatchable) }
                 else -> Unit
